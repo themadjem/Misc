@@ -1,5 +1,8 @@
-Private Declare Sub Sleep Lib "kernel21.dll" (ByVal dwMilliseconds As Long)
-
+#If VBA7 Then
+    Private Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal ms As LongPtr)
+#Else
+    Private Declare Sub Sleep Lib "kernel32" (ByVal ms as Long)
+#End If
 Sub AutoOpen()
 '
 ' AutoOpen Macro
@@ -45,10 +48,10 @@ sTitle = "Subscriber"
 Default = "1"
 
 ' Display messages
-pNumCopies = Val(InputBop(pMessage, pTitle, Default))
+pNumCopies = Val(InputBox(pMessage, pTitle, Default))
 gNumCopies = Val(InputBox(xMessage, gTitle, Default))
-bNumCopies = Val(InputBob(bMessage, bTitle, Default))
-sNumCopies = Val(InputBos(sMessage, sTitle, Default))
+bNumCopies = Val(InputBox(bMessage, bTitle, Default))
+sNumCopies = Val(InputBox(sMessage, sTitle, Default))
 
 
 ' Retrieve Bookmarks
@@ -74,13 +77,13 @@ sTl.Text = sNumCopies
 'Priority
 Counter = 0
 While Counter < pNumCopies
-	pCt.Delete
-	pCt.Text = Default + Counter
-	ActiveDocument.PrintOut Range:=wdPrintRangeOfPages, Pages:="4"
-	Sleep 3000
-	' Considering using PrintOut's Background:=False and foregoing the sleep.
-	' With the current configuration, Window's print spooler causes the first 9 pages to be spooled and printed last
-	Counter = Counter + 1
+        pCt.Delete
+        pCt.Text = Default + Counter
+        ActiveDocument.PrintOut Range:=wdPrintRangeOfPages, Pages:="4"
+        Sleep 3000
+        ' Considering using PrintOut's Background:=False and foregoing the sleep.
+        ' With the current configuration, Window's print spooler causes the first 9 pages to be spooled and printed last
+        Counter = Counter + 1
 Wend
 pCt.Text = "count"
 pTl.Text = "total"
@@ -88,11 +91,11 @@ pTl.Text = "total"
 'Group
 Counter = 0
 While Counter < gNumCopies
-	gCt.Delete
-	gCt.Text = Default + Counter
-	ActiveDocument.PrintOut Range:=wdPrintRangeOfPages, Pages:="3"
-	Sleep 3000
-	Counter = Counter + 1
+        gCt.Delete
+        gCt.Text = Default + Counter
+        ActiveDocument.PrintOut Range:=wdPrintRangeOfPages, Pages:="3"
+        Sleep 3000
+        Counter = Counter + 1
 Wend
 gCt.Text = "count"
 gTl.Text = "total"
@@ -100,11 +103,11 @@ gTl.Text = "total"
 'Bulk
 Counter = 0
 While Counter < bNumCopies
-	bCt.Delete
-	bCt.Text = Default + Counter
-	ActiveDocument.PrintOut Range:=wdPrintRangeOfPages, Pages:="2"
-	Sleep 3000
-	Counter = Counter + 1
+        bCt.Delete
+        bCt.Text = Default + Counter
+        ActiveDocument.PrintOut Range:=wdPrintRangeOfPages, Pages:="2"
+        Sleep 3000
+        Counter = Counter + 1
 Wend
 bCt.Text = "count"
 bTl.Text = "total"
@@ -112,26 +115,25 @@ bTl.Text = "total"
 'Subscriber
 Counter = 0
 While Counter < sNumCopies
-	sCt.Delete
-	sCt.Text = Default + Counter
-	ActiveDocument.PrintOut Range:=wdPrintRangeOfPages, Pages:="1"
-	Sleep 3000
-	Counter = Counter + 1
+        sCt.Delete
+        sCt.Text = Default + Counter
+        ActiveDocument.PrintOut Range:=wdPrintRangeOfPages, Pages:="1"
+        Sleep 3000
+        Counter = Counter + 1
 Wend
 sCt.Text = "count"
 sTl.Text = "total"
 
 ' Recreate bookmarks for future use
 With ActiveDocument.Bookmarks
-	.Add Name:=pcbk Range:=pCt
-	.Add Name:=gcbk Range:=gCt
-	.Add Name:=bcbk Range:=bCt
-	.Add Name:=scbk Range:=sCt
-	
-	.Add Name:=ptbk Range:=pTl
-	.Add Name:=gtbk Range:=gTl
-	.Add Name:=btbk Range:=bTl
-	.Add Name:=stbk Range:=sTl
+        .Add Name:=pcbk Range:=pCt
+        .Add Name:=gcbk Range:=gCt
+        .Add Name:=bcbk Range:=bCt
+        .Add Name:=scbk Range:=sCt
+        .Add Name:=ptbk Range:=pTl
+        .Add Name:=gtbk Range:=gTl
+        .Add Name:=btbk Range:=bTl
+        .Add Name:=stbk Range:=sTl
 End With
 
 ActiveDocument.Save
